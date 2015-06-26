@@ -1,0 +1,31 @@
+plugins {
+	id 'java'
+	id 'eclipse'
+}
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
+
+dependencies {
+	// Vertx
+	compile 'io.vertx:vertx-core:3.0.0'
+	compile 'io.vertx:vertx-web:3.0.0'
+	// Nubes (vertx annotation framework)
+	compile 'com.github.aesteve:vertx-nubes:0.1-SNAPSHOT'
+	
+	// MongoDB
+	compile 'io.vertx:vertx-mongo-client:3.0.0'
+	
+	// Handlebars
+    compile 'com.github.jknack:handlebars:2.1.0'
+	
+	// Tests
+	testCompile 'io.vertx:vertx-unit:3.0.0'
+	testCompile 'junit:junit:4.12'
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.4'
+}
