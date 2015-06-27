@@ -1,3 +1,105 @@
+@font-face {
+    font-family: "Digit";
+    src: url('/assets/css/fonts/DS-DIGI.ttf');
+}
+@font-face {
+    font-family: "Digit";
+    font-style: italic;
+    src: url('/assets/css/fonts/DS-DIGII.ttf');
+}
+@font-face {
+    font-family: "Digit";
+    font-weight: bold;
+    src: url('/assets/css/fonts/DS-DIGIB.ttf');
+}
+@font-face {
+    font-family: "Scoreboard";
+    font-weight: bold;
+    src: url('/assets/css/fonts/SCOREBOARD.ttf');
+}
+
+* {
+	box-sizing:border-box;
+}
+
 body {
 	padding:20px;
+}
+
+h1 {
+	text-align:center;
+}
+
+.full-width {
+	width:100%;
+}
+
+.pointer {
+	cursor:pointer;
+}
+
+.table {
+	display:table;
+}
+
+.table .table-cell {
+	display:table-cell;
+}
+
+.table .table-row {
+	display:table-row;
+}
+
+.center {
+	text-align:center;
+}
+
+.score {
+	width:80%;
+	background:#FAFAFA;
+	margin: 0 auto;
+	font-size:12em;
+	font-family:'Scoreboard';
+}
+
+.valign-center {
+	vertical-align:middle;
+}
+
+.player-name {
+	padding:30px;
+	font-size:2em;
+}
+
+.score-wrapper {
+	width:43%;
+}
+
+.arrow-key {
+	width:100px;
+}
+
+.arrow-wrapper {
+	padding-top:30px;
+}
+
+.game-msg {
+	text-align:center;
+	font-size:1.4em;
+}
+
+.game-duration {
+	font-size:3em;
+	font-family:'Digit';
+	padding:10px;
+	background-color:#333;
+	color:white;
+	border:2px solid black;
+}
+
+.serving {
+	border:2px solid #CCC;
+}
+
+.winner {
 }

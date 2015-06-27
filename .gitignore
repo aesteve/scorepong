@@ -7,3 +7,6 @@ target
 .classpath
 .vertx
 .project
+node_modules
+file-uploads
+web/assets/js/*

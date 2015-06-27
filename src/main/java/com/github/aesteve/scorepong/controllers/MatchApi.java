@@ -1,9 +1,8 @@
 package com.github.aesteve.scorepong.controllers;
 
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
-
-import java.util.List;
 
 import com.github.aesteve.scorepong.Server;
 import com.github.aesteve.scorepong.services.MongoDAO;
@@ -27,13 +26,13 @@ public class MatchApi {
 	private MongoDAO mongo;
 
 	@GET
-	public void getMatches(RoutingContext context, Payload<List<JsonObject>> matches) {
+	public void getMatches(RoutingContext context, Payload<JsonArray> matches) {
 		mongo.getMatches(res -> {
 			if (res.failed()) {
 				context.fail(res.cause());
 				return;
 			}
-			matches.set(res.result());
+			matches.set(new JsonArray(res.result()));
 			context.next();
 		});
 	}

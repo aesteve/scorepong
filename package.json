@@ -1,0 +1,29 @@
+{
+  "author": "aesteve",
+  "name": "scorepong",
+  "browserify": {
+    "transform": [
+      [
+        "reactify",
+        {
+          "es6": true
+        }
+      ]
+    ]
+  },
+  "dependencies": {
+    "immutable": "^3.7.4",
+    "moment": "^2.10.3",
+    "react": "^0.13.3",
+    "reactify": "^1.1.1",
+    "reflux": "^0.2.8",
+    "sockjs-client": "^1.0.0",
+    "superagent": "^1.2.0"
+  },
+  "devDependencies": {
+    "babelify": "^6.1.2",
+    "browserify": "^10.2.4",
+    "browserify-es6-transpiler": "0.0.3",
+    "reactify": "^1.1.1"
+  }
+}

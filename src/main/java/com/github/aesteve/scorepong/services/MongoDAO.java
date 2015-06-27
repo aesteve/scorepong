@@ -62,7 +62,10 @@ public class MongoDAO implements Service {
 
 	public void updateMatch(String id, JsonObject newMatch, Handler<AsyncResult<Void>> handler) {
 		JsonObject query = new JsonObject();
-		mongo.update("match", query, newMatch, handler);
+		query.put("_id", id);
+		JsonObject updateQuery = new JsonObject();
+		updateQuery.put("$set", newMatch);
+		mongo.update("match", query, updateQuery, handler);
 	}
 
 	public void delete(String id, Handler<AsyncResult<Void>> handler) {
