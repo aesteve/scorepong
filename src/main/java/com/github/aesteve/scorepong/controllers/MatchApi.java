@@ -64,7 +64,7 @@ public class MatchApi {
 	@PUT("/:id")
 	@PATCH("/:id")
 	public void updateMatch(RoutingContext context, @Param("id") String id, @RequestBody JsonObject match, Payload<JsonObject> result) {
-		mongo.updateMatch(id, match.put("_id", id), res -> {
+		mongo.updateMatch(match.put("_id", id), null, res -> {
 			if (res.failed()) {
 				context.fail(res.cause());
 				return;

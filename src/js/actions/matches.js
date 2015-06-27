@@ -11,6 +11,7 @@ var Actions = Reflux.createActions({
 	"connect":{async:false},
 	"startGame":{async:false},
 	"scorePoint":{async:false},
+	"undo":{async:false},
 	"msgReceived":{async:false}
 });
 
@@ -63,19 +64,18 @@ Actions.fetchGame.listen(function(id){
 });
 
 Actions.connect.listen(function(id){
-	var startMsg = {
+	var connectMsg = {
 		action:"connect",
 		game:id
 	};
-	tryToSend(startMsg);
+	tryToSend(connectMsg);
 });
 
 Actions.startGame.listen(function(id){
 	var startMsg = {
-		action:"start",
-		game:id
+		action:"start"
 	};
-	socket.send(JSON.stringify(startMsg));
+	tryToSend(startMsg);
 });
 
 Actions.scorePoint.listen(function(player){
@@ -83,7 +83,14 @@ Actions.scorePoint.listen(function(player){
 		action:"point",
 		player:player
 	};
-	socket.send(JSON.stringify(msg));
+	tryToSend(msg);
+});
+
+Actions.undo.listen(function(player){
+	var msg = {
+		action:"undo"
+	};
+	tryToSend(msg);
 });
 
 var socket = new SockJS('/sockjs');
@@ -100,7 +107,7 @@ socket.onopen = function() {
 	}
 };
 var tryToSend = function(msg) {
-	if (socket.status !== 'OPEN') {
+	if (socket.readyState !== 1) {
 		pendingMsgs.push(msg);
 		return;
 	}

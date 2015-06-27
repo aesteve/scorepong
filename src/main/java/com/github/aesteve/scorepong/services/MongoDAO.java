@@ -60,11 +60,19 @@ public class MongoDAO implements Service {
 		});
 	}
 
-	public void updateMatch(String id, JsonObject newMatch, Handler<AsyncResult<Void>> handler) {
+	public void updateMatch(JsonObject newMatch, List<String> unset, Handler<AsyncResult<Void>> handler) {
 		JsonObject query = new JsonObject();
-		query.put("_id", id);
+		query.put("_id", newMatch.getString("_id"));
 		JsonObject updateQuery = new JsonObject();
 		updateQuery.put("$set", newMatch);
+		if (unset != null) {
+			JsonObject unsetQuery = new JsonObject();
+			unset.forEach(field -> {
+				newMatch.remove(field);
+				unsetQuery.put(field, "");
+			});
+			updateQuery.put("$unset", unsetQuery);
+		}
 		mongo.update("match", query, updateQuery, handler);
 	}
 

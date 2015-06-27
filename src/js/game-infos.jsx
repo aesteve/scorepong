@@ -19,7 +19,20 @@ class GameDuration extends React.Component {
 	}
 	
 	componentDidMount() {
-		this.timerId = setInterval(this.updateDuration.bind(this), 1000); // jshint ignore:line
+		this.launchTimer();
+	}
+	
+	componentWillReceiveProps(newProps) {
+		const game = newProps.game;
+		if (!!game.get('endDate')) {
+		}
+	}
+	
+	launchTimer() {
+		console.log("launch "+this.timerId);
+		if (!this.timerId) {
+			this.timerId = setInterval(this.updateDuration.bind(this), 1000); // jshint ignore:line
+		}
 	}
 	
 	updateDuration() {
@@ -28,6 +41,7 @@ class GameDuration extends React.Component {
 			this.setState({
 				duration:this.calcDuration(moment(game.get('endDate')))
 			});
+			this.timerId = null;
 			clearInterval(this.timerId); // jshint ignore:line
 			return;
 		}
@@ -44,13 +58,18 @@ class GameDuration extends React.Component {
 
 	componentWillUnmount() {
 		if (this.timerId) {
+			this.timerId = null;
 			clearInterval(this.timerId); // jshint ignore:line
 		}
 	}
 	
 	render() {
+		const ended = !!this.props.game.get('endDate');
 		return (
-			<span className="game-duration">{this.state.duration}</span>
+			<span className="game-duration">
+				{this.state.duration}
+				{ended && <span className="red-circle"></span>}
+			</span>
 		);
 	}
 }

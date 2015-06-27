@@ -13,7 +13,8 @@ class GameList extends React.Component {
 			const start = game.get('startDate');
 			const end = game.get('endDate');
 			if (start && end) {
-				gameDuration = moment(end).diff(moment(start));
+				gameDuration = moment(end).diff(moment(start), 'minutes') + 
+					' : ' +moment(end).diff(moment(start), 'seconds')%60 + "''";
 			}
 			return (
 				<tr className="pointer" onClick={this.displayGame.bind(this, game)}>

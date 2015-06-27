@@ -20,7 +20,7 @@ class Match extends React.Component {
 	componentDidMount() {
 		store.listen(this.matchChanged.bind(this));
 		Actions.connect(this.gameId);
-		document.addEventListener('keyup', this.keyListener); // jshint ignore:line
+		document.addEventListener('keydown', this.keyListener); // jshint ignore:line
 	}
 	
 	keyListener(e) {
@@ -29,7 +29,9 @@ class Match extends React.Component {
 			Actions.scorePoint(1);
 		} else if (key === 39) {
 			Actions.scorePoint(2);
-	    }
+	    } else if (key === 90 && e.ctrlKey) {
+			Actions.undo();
+		}
 	}
 	
 	componentWillUnmount() {
@@ -45,20 +47,20 @@ class Match extends React.Component {
 	render() {
 		const game = this.state.game;
 		let msg, msgStyle;
-		msgStyle = "full-width alert-box radius game-msg ";
+		msgStyle = "full-width game-msg ";
 		const winner = game.get('winner');
 		const winnerId = game.get('winnerId');
 		const matchPoint = this.isMatchPoint();
 		if (winner) {
 			msg = winner + " wins !";
-			msgStyle += "success";
+			msgStyle += "alert-box radius success";
 		} else if (matchPoint){
 			msg = 'Match point : ' + matchPoint;
-			msgStyle += "info";
+			msgStyle += "alert-box radius info";
 		}
 		else if (this.isTossPoint()) {
 			msg = 'Toss point';
-			msgStyle += "info";
+			msgStyle += "alert-box radius info";
 		}
 		const scorePlayer2 = game.get('scorePlayer2') || '0';
 		const scorePlayer1 = game.get('scorePlayer1') || '0';

@@ -28,7 +28,18 @@ class MainPage extends React.Component {
 		return (
 			<div className="main-wrapper">
 				<h1>Welcome to ScorePong</h1>
-				<button className="" onClick={this.createNewGame}>New game</button>
+				<div className="table">
+					<div className="table-row">
+						<div className="table-cell">
+							<input className="player-input" id="player1" placeholder="Player1" /><br/>
+							<input className="player-input" id="player2" placeholder="Player2" /><br/>
+							<button className="player-input" onClick={this.createNewGame}>New game</button>
+						</div>
+						<div className="table-cell">
+							
+						</div>
+					</div>
+				</div>
 				<h3>Past games</h3>
 				<GameList games={this.state.games} />
 			</div>
@@ -37,8 +48,8 @@ class MainPage extends React.Component {
 	
 	createNewGame() {
 		var defaultGame = {
-			player1:"Player 1",
-			player2:"Player 2"
+			player1:document.querySelector("#player1").value, // jshint ignore:line
+			player2:document.querySelector("#player2").value  // jshint ignore:line
 		};
 		actions.createGame(defaultGame);
 	}
