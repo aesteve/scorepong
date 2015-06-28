@@ -2,28 +2,40 @@
 
 import React from 'react';
 import actions from './actions/matches';
-import store from './stores/matches';
+import gameStore from './stores/matches';
+import playerStore from './stores/players';
 import GameList from './game-list.jsx';
-
+import PlayerRankings from './player-rankings.jsx';
 
 class MainPage extends React.Component {
 	
 	constructor(props) {
 		super(props);
-		this.state = {games:store.getGames()};
+		this.state = {
+            games:gameStore.getGames(),
+            players:playerStore.getPlayers()
+        };
 	}
 	
 	componentDidMount() {
-		store.listen(this.matchesChanged.bind(this));
+		gameStore.listen(this.matchesChanged.bind(this));
+        playerStore.listen(this.playersChanged.bind(this));
 		actions.fetchGames();
+        actions.fetchPlayers();
 	}
 	
 	matchesChanged() {
 		this.setState({
-			games:store.getGames()
+			games:gameStore.getGames()
 		});
 	}
-	
+
+    playersChanged() {
+		this.setState({
+			players:playerStore.getPlayers()
+		});
+	}
+    
 	render() {
 		return (
 			<div className="main-wrapper">
@@ -36,7 +48,7 @@ class MainPage extends React.Component {
 							<button className="player-input" onClick={this.createNewGame}>New game</button>
 						</div>
 						<div className="table-cell">
-							
+                            <PlayerRankings players={this.state.players} />
 						</div>
 					</div>
 				</div>

@@ -7,6 +7,7 @@ import SockJS from 'sockjs-client';
 var Actions = Reflux.createActions({
 	"fetchGames":{children: ["completed","failed"]},
 	"fetchGame":{children: ["completed","failed"]},
+    "fetchPlayers":{children: ["completed","failed"]},
 	"createGame":{children: ["completed","failed"]},
 	"connect":{async:false},
 	"startGame":{async:false},
@@ -33,6 +34,17 @@ var getJSON = function(path, cb) {
 Actions.fetchGames.listen(function(){
 	var self = this;
 	getJSON('/api/match/', function(err, res) {
+		if (err) {
+			self.failed(err);
+		} else {
+			self.completed(res.body);
+		}
+	});
+});
+
+Actions.fetchPlayers.listen(function(){
+	var self = this;
+	getJSON('/api/players/', function(err, res) {
 		if (err) {
 			self.failed(err);
 		} else {

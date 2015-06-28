@@ -117,3 +117,17 @@ h1 {
   top: -10px;
   left: 3px;
 }
+
+.player-rankings {
+	position:relative;
+	top:10px;
+	left:30px;
+}
+
+.align-right {
+	text-align:right;
+}
+
+.underline {
+	text-decoration:underline;
+}
