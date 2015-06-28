@@ -1,5 +1,9 @@
 package com.github.aesteve.scorepong;
 
+import static com.github.aesteve.vertx.nubes.utils.async.AsyncUtils.completeOrFail;
+import static com.github.aesteve.vertx.nubes.utils.async.AsyncUtils.ignoreResult;
+import static com.github.aesteve.vertx.nubes.utils.async.AsyncUtils.onSuccessOnly;
+
 import com.github.aesteve.scorepong.services.MongoDAO;
 import com.github.aesteve.vertx.nubes.VertxNubes;
 import com.github.aesteve.vertx.nubes.exceptions.MissingConfigurationException;
@@ -42,14 +46,10 @@ public class Server extends AbstractVerticle {
 	@Override
 	public void start(Future<Void> future) {
 		server = vertx.createHttpServer(options);
-		nubes.bootstrap(res -> {
-			if (res.failed()) {
-				future.fail(res.cause());
-				return;
-			}
-			server.requestHandler(res.result()::accept);
-			startServer(future);
-		});
+		nubes.bootstrap(onSuccessOnly(future, router -> {
+			server.requestHandler(router::accept);
+			server.listen(ignoreResult(future));
+		}));
 	}
 
 	@Override
@@ -59,25 +59,9 @@ public class Server extends AbstractVerticle {
 		});
 	}
 
-	private void startServer(Future<Void> future) {
-		server.listen(res -> {
-			if (res.succeeded()) {
-				future.complete();
-			} else {
-				future.fail(res.cause());
-			}
-		});
-	}
-
 	private void closeServer(Future<Void> future) {
 		if (server != null) {
-			server.close(res -> {
-				if (res.failed()) {
-					future.fail(res.cause());
-				} else {
-					future.complete();
-				}
-			});
+			server.close(completeOrFail(future));
 		} else {
 			future.complete();
 		}

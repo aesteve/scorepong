@@ -1,12 +1,6 @@
 package com.github.aesteve.scorepong.controllers;
 
-import io.vertx.core.Handler;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-import io.vertx.ext.web.handler.sockjs.SockJSSocket;
+import static com.github.aesteve.vertx.nubes.utils.async.AsyncUtils.onSuccessOnly;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,10 +15,14 @@ import com.github.aesteve.vertx.nubes.annotations.sockjs.OnMessage;
 import com.github.aesteve.vertx.nubes.annotations.sockjs.SockJS;
 import com.github.aesteve.vertx.nubes.utils.DateUtils;
 
+import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.handler.sockjs.SockJSSocket;
+
 @SockJS("/sockjs/*")
 public class Socket {
-
-	private final Logger log = LoggerFactory.getLogger(Socket.class);
 
 	@Service("mongo")
 	private MongoDAO mongo;
@@ -45,16 +43,16 @@ public class Socket {
 		}
 		checkAccess(emitter, game -> {
 			switch (action) {
-				case "start":
-					this.startGame(emitter, game);
-					break;
-				case "point":
-					Integer player = json.getInteger("player");
-					this.scorePoint(emitter, game, player);
-					break;
-				case "undo":
-					this.undo(emitter, game);
-					break;
+			case "start":
+				this.startGame(emitter, game);
+				break;
+			case "point":
+				Integer player = json.getInteger("player");
+				this.scorePoint(emitter, game, player);
+				break;
+			case "undo":
+				this.undo(emitter, game);
+				break;
 			}
 		});
 	}
@@ -70,24 +68,16 @@ public class Socket {
 			emitter.close();
 			return;
 		}
-		mongo.getMatch(id, res -> {
-			if (res.failed()) {
-				log.error("Could not find game " + id, res.cause());
-				return;
-			}
-			handler.handle(res.result());
-		});
+		mongo.getMatch(id, onSuccessOnly(res -> {
+			handler.handle(res);
+		}));
 	}
 
 	private void connect(SockJSSocket emitter, String gameId) {
-		mongo.getMatch(gameId, res -> {
-			if (res.failed()) {
-				log.error("Could not find game " + gameId, res.cause());
-				return;
-			}
+		mongo.getMatch(gameId, onSuccessOnly(res -> {
 			matches.put(emitter, gameId);
-			notifyAll(res.result());
-		});
+			notifyAll(res);
+		}));
 	}
 
 	private void scorePoint(SockJSSocket emitter, JsonObject game, Integer player) {
@@ -105,13 +95,9 @@ public class Socket {
 			updateHistory(game, player);
 			endIfNeeded(game);
 		}
-		mongo.updateMatch(game, null, updateRes -> {
-			if (updateRes.succeeded()) {
-				notifyAll(game);
-			} else {
-				log.error("Could not update game", updateRes.cause());
-			}
-		});
+		mongo.updateMatch(game, null, onSuccessOnly(() -> {
+			notifyAll(game);
+		}));
 	}
 
 	private void undo(SockJSSocket emitter, JsonObject game) {
@@ -132,26 +118,18 @@ public class Socket {
 			Integer last = (Integer) history.remove(history.size() - 1);
 			game.put("scorePlayer" + last, game.getInteger("scorePlayer" + last) - 1);
 		}
-		mongo.updateMatch(game, removeFields, res -> {
-			if (res.failed()) {
-				log.error("Could not update", res.cause());
-				return;
-			}
+		mongo.updateMatch(game, removeFields, onSuccessOnly(() -> {
 			notifyAll(game);
-		});
+		}));
 	}
 
 	private void startGame(SockJSSocket emitter, JsonObject game) {
 		String id = game.getString("_id");
 		game.put("startDate", DateUtils.INSTANCE.formatIso8601(new Date()));
-		mongo.updateMatch(game, null, updateRes -> {
-			if (updateRes.succeeded()) {
-				matches.put(emitter, id);
-				notifyAll(game);
-			} else {
-				log.error("Could not update game", updateRes.cause());
-			}
-		});
+		mongo.updateMatch(game, null, onSuccessOnly(() -> {
+			matches.put(emitter, id);
+			notifyAll(game);
+		}));
 	}
 
 	private void notifyAll(JsonObject game) {
