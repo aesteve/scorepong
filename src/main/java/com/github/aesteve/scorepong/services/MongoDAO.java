@@ -9,22 +9,25 @@ import io.vertx.ext.mongo.MongoClient;
 
 import java.util.List;
 
+import com.github.aesteve.scorepong.verticles.EmbeddedMongo;
 import com.github.aesteve.vertx.nubes.services.Service;
 
 public class MongoDAO implements Service {
 
-	public final String HOST = "localhost";
-	public final Integer PORT = 27017;
-	public final String DB = "scorepong";
-
 	private MongoClient mongo;
-
+	private JsonObject config;
+	
+	public MongoDAO(JsonObject config) {
+		this.config = config;
+		if (config.getBoolean("embed")) {
+			config.put("host", "localhost");
+			config.put("port", EmbeddedMongo.MONGO_PORT);
+		}
+		config.put("db_name", "scorepong");
+	}
+	
 	@Override
 	public void init(Vertx vertx) {
-		JsonObject config = new JsonObject();
-		config.put("port", PORT);
-		config.put("host", HOST);
-		config.put("db_name", DB);
 		mongo = MongoClient.createShared(vertx, config);
 	}
 

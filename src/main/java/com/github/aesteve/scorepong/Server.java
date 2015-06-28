@@ -1,5 +1,9 @@
 package com.github.aesteve.scorepong;
 
+import com.github.aesteve.scorepong.services.MongoDAO;
+import com.github.aesteve.vertx.nubes.VertxNubes;
+import com.github.aesteve.vertx.nubes.exceptions.MissingConfigurationException;
+
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
@@ -7,16 +11,10 @@ import io.vertx.core.Vertx;
 import io.vertx.core.VertxException;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
-import io.vertx.ext.web.templ.HandlebarsTemplateEngine;
-
-import com.github.aesteve.scorepong.services.MongoDAO;
-import com.github.aesteve.vertx.nubes.VertxNubes;
-import com.github.aesteve.vertx.nubes.exceptions.MissingConfigurationException;
+import io.vertx.core.json.JsonObject;
 
 public class Server extends AbstractVerticle {
 
-	public final static Integer PORT = 9000;
-	public final static String HOST = "localhost";
 	public final static String MONGO_SERVICE = "mongo";
 
 	private HttpServer server;
@@ -26,15 +24,15 @@ public class Server extends AbstractVerticle {
 	@Override
 	public void init(Vertx vertx, Context context) {
 		super.init(vertx, context);
+		JsonObject config = context.config();
 		options = new HttpServerOptions();
-		options.setPort(PORT);
-		options.setHost(HOST);
+		options.setHost(config.getString("host", "localhost"));
+		options.setPort(config.getInteger("port", 9000));
+		JsonObject nubesConfig = config.getJsonObject("nubes");
+		JsonObject mongoConfig = config.getJsonObject("mongo");
 		try {
-			nubes = new VertxNubes(vertx, context.config());
-			nubes.registerService(MONGO_SERVICE, new MongoDAO());
-			HandlebarsTemplateEngine engine = HandlebarsTemplateEngine.create();
-			engine.setMaxCacheSize(0);
-			nubes.registerTemplateEngine("hbs", engine);
+			nubes = new VertxNubes(vertx, nubesConfig);
+			nubes.registerService(MONGO_SERVICE, new MongoDAO(mongoConfig));
 		} catch (MissingConfigurationException me) {
 			throw new VertxException(me);
 		}

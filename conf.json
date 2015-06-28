@@ -1,3 +1,11 @@
 {
-	"controller-packages":["com.github.aesteve.scorepong.controllers"]
+	"host":"localhost",
+	"port":9000,
+	"nubes":{
+		"controller-packages":["com.github.aesteve.scorepong.controllers"],
+		"verticle-package":"com.github.aesteve.scorepong.verticles"
+	},
+	"mongo":{
+		"embed":true
+	}
 }
