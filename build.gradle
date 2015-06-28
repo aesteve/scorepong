@@ -1,6 +1,8 @@
 plugins {
 	id 'java'
 	id 'eclipse'
+	id 'com.github.johnrengelman.shadow' version '1.2.1'
+	id "com.moowork.gulp" version "0.10"
 }
 
 repositories {
@@ -17,13 +19,45 @@ dependencies {
 	
 	// MongoDB
 	compile 'io.vertx:vertx-mongo-client:3.0.0'
-	
-	// Handlebars
-    compile 'com.github.jknack:handlebars:2.1.0'
-	
-	// Tests
-	testCompile 'io.vertx:vertx-unit:3.0.0'
-	testCompile 'junit:junit:4.12'
+	compile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.47.0'
+}
+
+node {
+	download = true
+}
+
+tasks.gulp_compile.dependsOn npm_install
+
+shadowJar  {
+	dependsOn gulp_compile
+    classifier = ''
+    manifest {
+        attributes 'Main-Class': 'io.vertx.core.Starter'
+        attributes 'Main-Verticle': 'java:com.github.aesteve.scorepong.Server'
+    }
+    mergeServiceFiles {
+        include 'META-INF/services/io.vertx.core.spi.VerticleFactory'
+    }
+    dependencies {
+        exclude(dependency('io.vertx:codegen'))
+        exclude(dependency('junit:junit'))
+        exclude(dependency('org.mvel:mvel2'))
+    }
+    into 'web', {
+        from 'web'
+    }
+}
+
+
+task start(dependsOn: shadowJar) << {
+    javaexec { 
+    	main="-jar"
+    	args = [
+    		shadowJar.archivePath,
+    		"-conf",
+    		"conf.json"
+		]
+	}
 }
 
 task wrapper(type: Wrapper) {

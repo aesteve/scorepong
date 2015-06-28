@@ -11,6 +11,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.VertxException;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 public class Server extends AbstractVerticle {
@@ -28,8 +29,8 @@ public class Server extends AbstractVerticle {
 		options = new HttpServerOptions();
 		options.setHost(config.getString("host", "localhost"));
 		options.setPort(config.getInteger("port", 9000));
-		JsonObject nubesConfig = config.getJsonObject("nubes");
 		JsonObject mongoConfig = config.getJsonObject("mongo");
+		JsonObject nubesConfig = createNubesConfig(mongoConfig.getBoolean("embed", false));
 		try {
 			nubes = new VertxNubes(vertx, nubesConfig);
 			nubes.registerService(MONGO_SERVICE, new MongoDAO(mongoConfig));
@@ -80,5 +81,16 @@ public class Server extends AbstractVerticle {
 		} else {
 			future.complete();
 		}
+	}
+	
+	private JsonObject createNubesConfig(boolean isMongoEmbedded) {
+		JsonObject json = new JsonObject();
+		if (isMongoEmbedded) {
+			json.put("verticle-package", "com.github.aesteve.scorepong.verticles");
+		}
+		JsonArray pkgs = new JsonArray();
+		pkgs.add("com.github.aesteve.scorepong.controllers");
+		json.put("controller-packages", pkgs);
+		return json;
 	}
 }
