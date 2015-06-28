@@ -91,7 +91,7 @@ public class Socket {
 	}
 
 	private void scorePoint(SockJSSocket emitter, JsonObject game, Integer player) {
-		if (game.getBoolean("endDate") != null) {
+		if (game.getString("endDate") != null) {
 			return;
 		}
 		if (game.getInteger("toss") == null) {
