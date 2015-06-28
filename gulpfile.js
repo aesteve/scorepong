@@ -13,7 +13,7 @@ var es = require('event-stream');
 var requireFiles = './node_modules/react/react.js';
 
 
-function compileScripts(watch) {
+function compileScripts(reload) {
     gutil.log('Starting browserify');
 
     var files = [
@@ -27,7 +27,7 @@ function compileScripts(watch) {
     	var newName = entry.substring(startName, endName);
     
 	    var bundler;
-	    if (watch) {
+	    if (reload) {
 	        bundler = watchify;
 	    } else {
 	        bundler = browserify;
@@ -50,4 +50,8 @@ function compileScripts(watch) {
 
 gulp.task('compile', function () {
 	compileScripts();
+});
+
+gulp.task('dev', function () {
+	compileScripts(true);
 });
