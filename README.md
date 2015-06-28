@@ -3,7 +3,7 @@ Scoreboard for ping-pong games
 
 ## Presentation
 
-ScorePong is a simple scoreboard to manage and store ping-pong games player between friends.
+ScorePong is a simple scoreboard to manage and store ping-pong games played between friends.
 
 It's been designed to be easy to use. Simply create a new game with the names of the two players, then start the game.
 
@@ -11,6 +11,13 @@ From now on, if player 1 scores, hit the left arrow key on your keyboard, if pla
 
 You're allowed to mess up counting the points, don't worry, everybody does mistakes... If it ever happens, simply hit CTRL+Z as many times as you made mistakes, and the score will go back in time.
 
+The current version only supports 21 points games with 5 services for each player.
+
+The player currently serving is highlighted.
+
+The game will stop by itself once a player has scored at least 21 points and leads by at least 2 points.
+
+Creating different types of games (11 points / 2 services) is in progress.
 
 ## How to run it
 
