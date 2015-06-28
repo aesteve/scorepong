@@ -1,6 +1,5 @@
 package com.github.aesteve.scorepong.controllers;
 
-import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;

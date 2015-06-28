@@ -1,16 +1,16 @@
 package com.github.aesteve.scorepong.services;
 
+import java.util.List;
+
+import com.github.aesteve.scorepong.verticles.EmbeddedMongo;
+import com.github.aesteve.vertx.nubes.services.Service;
+
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.MongoClient;
-
-import java.util.List;
-
-import com.github.aesteve.scorepong.verticles.EmbeddedMongo;
-import com.github.aesteve.vertx.nubes.services.Service;
 
 public class MongoDAO implements Service {
 

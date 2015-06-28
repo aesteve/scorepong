@@ -1,9 +1,5 @@
 package com.github.aesteve.scorepong.controllers;
 
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.RoutingContext;
-
 import com.github.aesteve.scorepong.Server;
 import com.github.aesteve.scorepong.services.MongoDAO;
 import com.github.aesteve.vertx.nubes.annotations.Controller;
@@ -17,6 +13,10 @@ import com.github.aesteve.vertx.nubes.annotations.routing.http.POST;
 import com.github.aesteve.vertx.nubes.annotations.routing.http.PUT;
 import com.github.aesteve.vertx.nubes.annotations.services.Service;
 import com.github.aesteve.vertx.nubes.marshallers.Payload;
+
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.RoutingContext;
 
 @Controller("/api/match")
 @ContentType("application/json")

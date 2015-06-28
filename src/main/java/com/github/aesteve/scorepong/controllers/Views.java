@@ -1,7 +1,5 @@
 package com.github.aesteve.scorepong.controllers;
 
-import io.vertx.ext.web.RoutingContext;
-
 import com.github.aesteve.scorepong.Server;
 import com.github.aesteve.scorepong.services.MongoDAO;
 import com.github.aesteve.vertx.nubes.annotations.Controller;
@@ -9,6 +7,8 @@ import com.github.aesteve.vertx.nubes.annotations.File;
 import com.github.aesteve.vertx.nubes.annotations.params.Param;
 import com.github.aesteve.vertx.nubes.annotations.routing.http.GET;
 import com.github.aesteve.vertx.nubes.annotations.services.Service;
+
+import io.vertx.ext.web.RoutingContext;
 
 @Controller("/")
 public class Views {
