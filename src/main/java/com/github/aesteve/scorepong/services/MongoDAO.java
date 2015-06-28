@@ -19,7 +19,7 @@ public class MongoDAO implements Service {
 	
 	public MongoDAO(JsonObject config) {
 		this.config = config;
-		if (config.getBoolean("embed")) {
+		if (config.getBoolean("embed", false)) {
 			config.put("host", "localhost");
 			config.put("port", EmbeddedMongo.MONGO_PORT);
 		}
